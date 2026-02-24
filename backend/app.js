@@ -1,5 +1,6 @@
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const { sequelize } = require('./models');
 
 const authRoutes = require('./routes/auth');
@@ -17,6 +18,14 @@ const PORT = process.env.PORT || 4000;
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
+// CORS configuration
+const corsOptions = {
+  origin: process.env.FRONTEND_URL || '*',
+  credentials: true,
+  optionsSuccessStatus: 200
+};
+app.use(cors(corsOptions));
+
 // middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -31,21 +40,50 @@ app.use('/api/inventory', inventoryRoutes);
 app.use('/api/reports', reportRoutes);
 
 // health check
-app.get('/', (req, res) => res.json({ status: 'ok' }));
+app.get('/', (req, res) => res.json({ status: 'ok', message: 'RR Enterprises API' }));
 
-// start server after db connection
-(async () => {
-  try {
-    console.log('Attempting to authenticate with database...');
-    await sequelize.authenticate();
-    console.log('Database connected');
-    await sequelize.sync(); // maybe use migrations later
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
-  } catch (err) {
-    console.error('Unable to connect to database:', err.message);
-    console.error('Full error:', err);
-    process.exit(1);
+// Database connection for serverless (Vercel) vs traditional server
+let isDbConnected = false;
+
+async function connectDatabase() {
+  if (!isDbConnected) {
+    try {
+      console.log('Attempting to authenticate with database...');
+      await sequelize.authenticate();
+      console.log('Database connected');
+      await sequelize.sync();
+      isDbConnected = true;
+    } catch (err) {
+      console.error('Unable to connect to database:', err.message);
+      throw err;
+    }
   }
-})();
+}
+
+// Middleware to ensure DB connection for serverless
+app.use(async (req, res, next) => {
+  try {
+    await connectDatabase();
+    next();
+  } catch (err) {
+    res.status(500).json({ error: 'Database connection failed' });
+  }
+});
+
+// For local development
+if (require.main === module) {
+  (async () => {
+    try {
+      await connectDatabase();
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    } catch (err) {
+      console.error('Startup error:', err);
+      process.exit(1);
+    }
+  })();
+}
+
+// Export for Vercel serverless
+module.exports = app;
