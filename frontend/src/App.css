@@ -1,0 +1,92 @@
+/* App-specific styles */
+
+button {
+  transition: all 0.2s ease-in-out;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+input, select, textarea {
+  font-family: inherit;
+}
+
+.shadow {
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+}
+
+/* Responsive Table Styles */
+@media (max-width: 768px) {
+  table {
+    font-size: 12px;
+  }
+  
+  table th,
+  table td {
+    padding: 8px 4px;
+  }
+  
+  /* Stack table columns on very small screens */
+  table.responsive {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+  }
+}
+
+/* Form Responsive Styles */
+@media (max-width: 640px) {
+  input, select, textarea {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  button {
+    width: 100%;
+    margin: 5px 0;
+  }
+  
+  form {
+    padding: 1rem;
+  }
+}
+
+/* Mobile Navigation & Cards */
+@media (max-width: 480px) {
+  .card {
+    padding: 1rem;
+    margin: 0.5rem 0;
+  }
+  
+  h1 {
+    font-size: 1.5rem;
+  }
+  
+  h2 {
+    font-size: 1.25rem;
+  }
+  
+  h3 {
+    font-size: 1.1rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  button {
+    display: none;
+  }
+  
+  .no-print {
+    display: none;
+  }
+  
+  .main-content {
+    padding: 0;
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "rr-billing-backend",
+  "version": "1.0.0",
+  "description": "Backend for RR Enterprises billing application",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "dependencies": {
+    "bcrypt": "^5.1.0",
+    "dotenv": "^10.0.0",
+    "express": "^4.18.2",
+    "jsonwebtoken": "^9.0.0",
+    "multer": "^1.4.5-lts.1",
+    "pg": "^8.18.0",
+    "qrcode": "^1.5.4",
+    "sequelize": "^6.32.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
