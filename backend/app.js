@@ -64,10 +64,13 @@ async function connectDatabase() {
 // Middleware to ensure DB connection for serverless
 app.use(async (req, res, next) => {
   try {
-    await connectDatabase();
+    if (process.env.NODE_ENV === 'production') {
+      await connectDatabase();
+    }
     next();
   } catch (err) {
-    res.status(500).json({ error: 'Database connection failed' });
+    console.error('DB middleware error:', err);
+    res.status(500).json({ error: 'Database connection failed', details: err.message });
   }
 });
 
