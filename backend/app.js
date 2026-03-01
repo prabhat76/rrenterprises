@@ -61,8 +61,13 @@ async function connectDatabase() {
   }
 }
 
-// Middleware to ensure DB connection for serverless
+// Middleware to ensure DB connection for serverless (lazy loading)
 app.use(async (req, res, next) => {
+  // Skip DB connection for health check
+  if (req.path === '/' || req.path === '/health' || req.path === '/api/test') {
+    return next();
+  }
+  
   try {
     if (process.env.NODE_ENV === 'production') {
       await connectDatabase();
