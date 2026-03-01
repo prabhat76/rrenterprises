@@ -39,8 +39,9 @@ app.use('/api/purchases', purchaseRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/reports', reportRoutes);
 
-// health check
+// health check (no database required)
 app.get('/', (req, res) => res.json({ status: 'ok', message: 'RR Enterprises API' }));
+app.get('/health', (req, res) => res.json({ status: 'healthy', timestamp: new Date() }));
 
 // Database connection for serverless (Vercel) vs traditional server
 let isDbConnected = false;
