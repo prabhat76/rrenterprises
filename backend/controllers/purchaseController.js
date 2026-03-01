@@ -23,6 +23,13 @@ exports.get = async (req, res) => {
   res.json(inv);
 };
 
+exports.update = async (req, res) => {
+  const inv = await PurchaseInvoice.findByPk(req.params.id);
+  if (!inv) return res.status(404).send();
+  await inv.update(req.body);
+  res.json(inv);
+};
+
 exports.remove = async (req, res) => {
   const inv = await PurchaseInvoice.findByPk(req.params.id);
   if (!inv) return res.status(404).send();

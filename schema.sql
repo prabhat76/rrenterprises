@@ -75,7 +75,10 @@ CREATE TABLE IF NOT EXISTS purchase_invoices (
     cgst_amount DECIMAL(10,2) DEFAULT 0,
     sgst_amount DECIMAL(10,2) DEFAULT 0,
     igst_amount DECIMAL(10,2) DEFAULT 0,
-    cE TABLE IF NOT EXISTS purchase_items (
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS purchase_items (
     id SERIAL PRIMARY KEY,
     purchase_invoice_id INTEGER REFERENCES purchase_invoices(id) ON DELETE CASCADE,
     product_id INTEGER REFERENCES products(id),

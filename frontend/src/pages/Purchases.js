@@ -13,9 +13,10 @@ const Purchases = () => {
   const fetchPurchases = async () => {
     try {
       const response = await axios.get('/api/purchases');
-      setPurchases(response.data);
+      setPurchases(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error('Error fetching purchases:', err);
+      setPurchases([]);
     }
   };
 
