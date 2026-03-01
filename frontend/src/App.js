@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import axios from 'axios';
 import Dashboard from './pages/Dashboard';
 import Login from './pages/Login';
@@ -14,7 +14,6 @@ import './App.css';
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -34,7 +33,6 @@ function App() {
     localStorage.removeItem('token');
     delete axios.defaults.headers.common['Authorization'];
     setIsLoggedIn(false);
-    setUser(null);
   };
 
   if (!isLoggedIn) {

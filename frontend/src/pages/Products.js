@@ -5,7 +5,6 @@ const Products = () => {
   const [products, setProducts] = useState([]);
   const [form, setForm] = useState({ name: '', description: '', price: '', hsn_code: '' });
   const [editing, setEditing] = useState(null);
-  const [photoFile, setPhotoFile] = useState(null);
 
   useEffect(() => {
     fetchProducts();
@@ -32,19 +31,6 @@ const Products = () => {
       fetchProducts();
     } catch (err) {
       console.error('Error saving product:', err);
-    }
-  };
-
-  const handleUploadPhoto = async (productId) => {
-    if (!photoFile) return;
-    try {
-      const formData = new FormData();
-      formData.append('photo', photoFile);
-      await axios.post(`/api/products/${productId}/photo`, formData);
-      setPhotoFile(null);
-      fetchProducts();
-    } catch (err) {
-      console.error('Error uploading photo:', err);
     }
   };
 

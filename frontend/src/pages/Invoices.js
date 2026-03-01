@@ -84,7 +84,7 @@ const Invoices = () => {
         return;
       }
 
-      const response = await axios.post(
+      await axios.post(
         `/api/invoices/${selectedInvoice.id}/items`,
         {
           product_id: parseInt(lineItem.product_id),

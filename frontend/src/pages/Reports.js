@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
 
@@ -9,7 +9,7 @@ const Reports = () => {
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
 
-  const fetchReport = async () => {
+  const fetchReport = useCallback(async () => {
     try {
       const params = { startDate, endDate };
       let response;
@@ -25,13 +25,13 @@ const Reports = () => {
     } catch (err) {
       console.error('Error fetching report:', err);
     }
-  };
+  }, [reportType, startDate, endDate]);
 
   useEffect(() => {
     if (startDate && endDate) {
       fetchReport();
     }
-  }, [reportType, startDate, endDate]);
+  }, [startDate, endDate, fetchReport]);
 
   const COLORS = ['#8884d8', '#82ca9d', '#ffc658', '#ff7c7c'];
 
