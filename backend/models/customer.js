@@ -21,9 +21,6 @@ module.exports = (sequelize) => {
     },
     address: {
       type: DataTypes.TEXT
-    },
-    gstin: {
-      type: DataTypes.STRING
     }
   });
 

@@ -23,18 +23,6 @@ module.exports = (sequelize) => {
     total_amount: {
       type: DataTypes.DECIMAL(10, 2),
       allowNull: false
-    },
-    cgst_amount: {
-      type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 0
-    },
-    sgst_amount: {
-      type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 0
-    },
-    igst_amount: {
-      type: DataTypes.DECIMAL(10, 2),
-      defaultValue: 0
     }
   });
 

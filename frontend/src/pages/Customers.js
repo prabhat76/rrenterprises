@@ -3,7 +3,7 @@ import axios from 'axios';
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
-  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '', gstin: '' });
+  const [form, setForm] = useState({ name: '', email: '', phone: '', address: '' });
   const [editing, setEditing] = useState(null);
 
   useEffect(() => {
@@ -27,7 +27,7 @@ const Customers = () => {
       } else {
         await axios.post('/api/customers', form);
       }
-      setForm({ name: '', email: '', phone: '', address: '', gstin: '' });
+      setForm({ name: '', email: '', phone: '', address: '' });
       fetchCustomers();
     } catch (err) {
       console.error('Error saving customer:', err);
@@ -59,12 +59,11 @@ const Customers = () => {
           <input type="email" placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className="p-2 border rounded" />
           <input type="text" placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} className="p-2 border rounded" />
           <input type="text" placeholder="Address" value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="p-2 border rounded" />
-          <input type="text" placeholder="GSTIN" value={form.gstin} onChange={(e) => setForm({ ...form, gstin: e.target.value })} className="p-2 border rounded" />
         </div>
         <button onClick={handleSave} className="mt-4 bg-blue-600 text-white px-4 py-2 rounded">
           {editing ? 'Update' : 'Add'}
         </button>
-        {editing && <button onClick={() => { setEditing(null); setForm({ name: '', email: '', phone: '', address: '', gstin: '' }); }} className="mt-4 ml-2 bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>}
+        {editing && <button onClick={() => { setEditing(null); setForm({ name: '', email: '', phone: '', address: '' }); }} className="mt-4 ml-2 bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>}
       </div>
       <div className="bg-white p-6 rounded shadow">
         <table className="w-full">
@@ -73,7 +72,7 @@ const Customers = () => {
               <th className="p-2 text-left">Name</th>
               <th className="p-2 text-left">Email</th>
               <th className="p-2 text-left">Phone</th>
-              <th className="p-2 text-left">GSTIN</th>
+              <th className="p-2 text-left">Address</th>
               <th className="p-2">Actions</th>
             </tr>
           </thead>
@@ -83,7 +82,7 @@ const Customers = () => {
                 <td className="p-2">{c.name}</td>
                 <td className="p-2">{c.email}</td>
                 <td className="p-2">{c.phone}</td>
-                <td className="p-2">{c.gstin}</td>
+                <td className="p-2">{c.address}</td>
                 <td className="p-2">
                   <button onClick={() => handleEdit(c)} className="text-blue-600 mr-2">Edit</button>
                   <button onClick={() => handleDelete(c.id)} className="text-red-600">Delete</button>
