@@ -15,7 +15,7 @@ const migrationRoutes = require('./routes/migrations');
 const app = express();
 const PORT = process.env.PORT || 4000;
 
-// Debug: Log database config
+// Debug: Log database config (v1.1)
 console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
