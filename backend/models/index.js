@@ -54,8 +54,8 @@ PurchaseItem.belongsTo(PurchaseInvoice);
 Product.hasMany(PurchaseItem);
 PurchaseItem.belongsTo(Product);
 
-Product.hasMany(InventoryBatch);
-InventoryBatch.belongsTo(Product);
+Product.hasMany(InventoryBatch, { foreignKey: 'productId' });
+InventoryBatch.belongsTo(Product, { foreignKey: 'productId' });
 
 Product.hasMany(ProductPhoto);
 ProductPhoto.belongsTo(Product);
