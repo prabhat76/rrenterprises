@@ -21,6 +21,9 @@ module.exports = (sequelize) => {
     hsn_code: {
       type: DataTypes.STRING
     }
+  }, {
+    tableName: 'products',
+    timestamps: false
   });
 
   return Product;
