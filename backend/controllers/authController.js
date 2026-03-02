@@ -5,13 +5,24 @@ const { User } = require('../models');
 exports.register = async (req, res) => {
   try {
     const { username, password, email } = req.body;
+    if (!username || !password || !email) {
+      return res.status(400).json({ error: 'Username, password and email are required' });
+    }
+
     const existing = await User.findOne({ where: { username } });
     if (existing) return res.status(400).json({ error: 'Username already taken' });
+
+    const existingEmail = await User.findOne({ where: { email } });
+    if (existingEmail) return res.status(400).json({ error: 'Email already registered' });
+
     const hash = await bcrypt.hash(password, 10);
     const user = await User.create({ username, password_hash: hash, email });
     res.json({ id: user.id, username: user.username, email: user.email });
   } catch (err) {
     console.error(err);
+    if (err.name === 'SequelizeUniqueConstraintError') {
+      return res.status(400).json({ error: 'Username or email already exists' });
+    }
     res.status(500).json({ error: 'Registration failed' });
   }
 };
