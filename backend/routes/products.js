@@ -4,7 +4,10 @@ const productController = require('../controllers/productController');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
-const upload = multer({ dest: 'uploads/products/' });
+
+// Use /tmp for serverless, uploads for local
+const uploadDir = process.env.NODE_ENV === 'production' ? '/tmp/products/' : 'uploads/products/';
+const upload = multer({ dest: uploadDir });
 
 router.get('/', authMiddleware, productController.list);
 router.get('/scan', productController.scan); // Tally-style scanner (no auth required)
