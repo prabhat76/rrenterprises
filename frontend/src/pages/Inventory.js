@@ -22,10 +22,10 @@ const Inventory = () => {
   const handleSave = async () => {
     try {
       if (editing) {
-        await axios.put(`/api/inventory/${editing.id}`, form);
+        await api.put(`/api/inventory/${editing.id}`, form);
         setEditing(null);
       } else {
-        await axios.post('/api/inventory', form);
+        await api.post('/api/inventory', form);
       }
       setForm({ product_id: '', batch_number: '', quantity: '', expiry_date: '' });
       fetchBatches();
@@ -70,7 +70,7 @@ const Inventory = () => {
           <thead className="bg-gray-800 text-white">
             <tr>
               <th className="p-2 text-left">Batch #</th>
-              <th className="p-2 text-left">Product ID</th>
+              <th className="p-2 text-left">Product</th>
               <th className="p-2 text-left">Quantity</th>
               <th className="p-2 text-left">Expiry Date</th>
               <th className="p-2">Actions</th>

@@ -22,10 +22,10 @@ const Products = () => {
   const handleSave = async () => {
     try {
       if (editing) {
-        await axios.put(`/api/products/${editing.id}`, form);
+        await api.put(`/api/products/${editing.id}`, form);
         setEditing(null);
       } else {
-        await axios.post('/api/products', form);
+        await api.post('/api/products', form);
       }
       setForm({ name: '', description: '', price: '', hsn_code: '' });
       fetchProducts();

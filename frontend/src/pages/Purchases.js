@@ -23,10 +23,10 @@ const Purchases = () => {
   const handleSave = async () => {
     try {
       if (editing) {
-        await axios.put(`/api/purchases/${editing.id}`, form);
+        await api.put(`/api/purchases/${editing.id}`, form);
         setEditing(null);
       } else {
-        await axios.post('/api/purchases', form);
+        await api.post('/api/purchases', form);
       }
       setForm({ invoice_number: '', supplier_name: '', purchase_date: '', total_amount: '' });
       fetchPurchases();

@@ -22,10 +22,10 @@ const Customers = () => {
   const handleSave = async () => {
     try {
       if (editing) {
-        await axios.put(`/api/customers/${editing.id}`, form);
+          await api.put(`/api/customers/${editing.id}`, form);
         setEditing(null);
       } else {
-        await axios.post('/api/customers', form);
+          await api.post('/api/customers', form);
       }
       setForm({ name: '', email: '', phone: '', address: '' });
       fetchCustomers();
