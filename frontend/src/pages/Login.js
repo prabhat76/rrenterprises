@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 
 const Login = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -12,14 +12,14 @@ const Login = ({ onLogin }) => {
     e.preventDefault();
     try {
       if (isRegister) {
-        await axios.post('/api/auth/register', { username, password, email });
+        await api.post('/api/auth/register', { username, password, email });
         setError('');
         setIsRegister(false);
         setUsername('');
         setPassword('');
         setEmail('');
       } else {
-        const response = await axios.post('/api/auth/login', { username, password });
+        const response = await api.post('/api/auth/login', { username, password });
         onLogin(response.data.token);
       }
     } catch (err) {

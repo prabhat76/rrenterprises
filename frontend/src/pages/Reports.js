@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
 
 const Reports = () => {
@@ -14,11 +14,11 @@ const Reports = () => {
       const params = { startDate, endDate };
       let response;
       if (reportType === 'sales') {
-        response = await axios.get('/api/reports/sales', { params });
+        response = await api.get('/api/reports/sales', { params });
       } else if (reportType === 'payments') {
-        response = await axios.get('/api/reports/payments', { params });
+        response = await api.get('/api/reports/payments', { params });
       } else if (reportType === 'purchases') {
-        response = await axios.get('/api/reports/purchases', { params });
+        response = await api.get('/api/reports/purchases', { params });
       }
       setData(response.data.invoices || response.data.transactions || []);
       setTotal(response.data.total || 0);

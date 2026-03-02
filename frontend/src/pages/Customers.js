@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 
 const Customers = () => {
   const [customers, setCustomers] = useState([]);
@@ -12,7 +12,7 @@ const Customers = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('/api/customers');
+      const response = await api.get('/api/customers');
       setCustomers(response.data);
     } catch (err) {
       console.error('Error fetching customers:', err);
@@ -42,7 +42,7 @@ const Customers = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure?')) return;
     try {
-      await axios.delete(`/api/customers/${id}`);
+      await api.delete(`/api/customers/${id}`);
       fetchCustomers();
     } catch (err) {
       console.error('Error deleting customer:', err);

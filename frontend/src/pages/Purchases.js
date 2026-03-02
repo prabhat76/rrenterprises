@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 
 const Purchases = () => {
   const [purchases, setPurchases] = useState([]);
@@ -12,7 +12,7 @@ const Purchases = () => {
 
   const fetchPurchases = async () => {
     try {
-      const response = await axios.get('/api/purchases');
+      const response = await api.get('/api/purchases');
       setPurchases(Array.isArray(response.data) ? response.data : []);
     } catch (err) {
       console.error('Error fetching purchases:', err);
@@ -43,7 +43,7 @@ const Purchases = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure?')) return;
     try {
-      await axios.delete(`/api/purchases/${id}`);
+      await api.delete(`/api/purchases/${id}`);
       fetchPurchases();
     } catch (err) {
       console.error('Error deleting purchase:', err);

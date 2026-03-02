@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 
 const Inventory = () => {
   const [batches, setBatches] = useState([]);
@@ -12,7 +12,7 @@ const Inventory = () => {
 
   const fetchBatches = async () => {
     try {
-      const response = await axios.get('/api/inventory');
+      const response = await api.get('/api/inventory');
       setBatches(response.data);
     } catch (err) {
       console.error('Error fetching batches:', err);
@@ -42,7 +42,7 @@ const Inventory = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure?')) return;
     try {
-      await axios.delete(`/api/inventory/${id}`);
+      await api.delete(`/api/inventory/${id}`);
       fetchBatches();
     } catch (err) {
       console.error('Error deleting batch:', err);

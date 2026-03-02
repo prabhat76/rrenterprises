@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 
@@ -40,7 +40,7 @@ const Invoices = () => {
 
   const fetchInvoices = async () => {
     try {
-      const response = await axios.get('/api/invoices');
+      const response = await api.get('/api/invoices');
       setInvoices(response.data);
     } catch (err) {
       console.error('Error fetching invoices:', err);
@@ -49,7 +49,7 @@ const Invoices = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('/api/products');
+      const response = await api.get('/api/products');
       setProducts(response.data);
     } catch (err) {
       console.error('Error fetching products:', err);
@@ -58,7 +58,7 @@ const Invoices = () => {
 
   const fetchCustomers = async () => {
     try {
-      const response = await axios.get('/api/customers');
+      const response = await api.get('/api/customers');
       setCustomers(response.data);
     } catch (err) {
       console.error('Error fetching customers:', err);
@@ -67,7 +67,7 @@ const Invoices = () => {
 
   const handleCreateInvoice = async () => {
     try {
-      const response = await axios.post('/api/invoices', form);
+      const response = await api.post('/api/invoices', form);
       setForm({ customer_id: '', invoice_date: new Date().toISOString().split('T')[0], due_date: '', status: 'draft' });
       setCurrentView('edit');
       setSelectedInvoice(response.data);
@@ -84,7 +84,7 @@ const Invoices = () => {
         return;
       }
 
-      await axios.post(
+      await api.post(
         `/api/invoices/${selectedInvoice.id}/items`,
         {
           product_id: parseInt(lineItem.product_id),
@@ -94,7 +94,7 @@ const Invoices = () => {
       );
 
       // Refresh invoice details
-      const invResponse = await axios.get(`/api/invoices/${selectedInvoice.id}/detail`);
+      const invResponse = await api.get(`/api/invoices/${selectedInvoice.id}/detail`);
       setSelectedInvoice(invResponse.data);
       setLineItem({ product_id: '', quantity: '', unit_price: '' });
       fetchInvoices();
@@ -107,8 +107,8 @@ const Invoices = () => {
   const handleDeleteLineItem = async (itemId) => {
     if (!window.confirm('Delete this line item?')) return;
     try {
-      await axios.delete(`/api/invoices/items/${itemId}`);
-      const invResponse = await axios.get(`/api/invoices/${selectedInvoice.id}/detail`);
+      await api.delete(`/api/invoices/items/${itemId}`);
+      const invResponse = await api.get(`/api/invoices/${selectedInvoice.id}/detail`);
       setSelectedInvoice(invResponse.data);
       fetchInvoices();
     } catch (err) {
@@ -123,7 +123,7 @@ const Invoices = () => {
         return;
       }
 
-      await axios.post(`/api/invoices/${selectedInvoice.id}/payment`, paymentForm);
+      await api.post(`/api/invoices/${selectedInvoice.id}/payment`, paymentForm);
       setPaymentForm({
         amount: '',
         transaction_date: new Date().toISOString().split('T')[0],
@@ -132,7 +132,7 @@ const Invoices = () => {
       });
 
       // Refresh invoice
-      const invResponse = await axios.get(`/api/invoices/${selectedInvoice.id}/detail`);
+      const invResponse = await api.get(`/api/invoices/${selectedInvoice.id}/detail`);
       setSelectedInvoice(invResponse.data);
       fetchInvoices();
     } catch (err) {

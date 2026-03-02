@@ -12,8 +12,8 @@ const Dashboard = () => {
 
   const fetchStats = async () => {
     try {
-      const invoices = await axios.get('/api/invoices');
-      const products = await axios.get('/api/products');
+      const invoices = await api.get('/api/invoices');
+      const products = await api.get('/api/products');
       const totalRevenue = invoices.data.reduce((sum, inv) => sum + parseFloat(inv.total_amount || 0), 0);
       const pending = invoices.data.filter(inv => inv.status !== 'done').length;
       const paid = invoices.data.filter(inv => inv.status === 'done').length;
