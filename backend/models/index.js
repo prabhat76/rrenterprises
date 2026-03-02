@@ -1,6 +1,13 @@
 const { Sequelize } = require('sequelize');
 const config = require('../config/config');
 
+// Explicitly require pg for Vercel serverless
+try {
+  require('pg');
+} catch (err) {
+  console.warn('pg package not found:', err.message);
+}
+
 const env = (process.env.NODE_ENV || 'development').trim();
 const dbConfig = config[env];
 
