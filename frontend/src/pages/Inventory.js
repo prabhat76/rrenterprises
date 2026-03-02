@@ -64,7 +64,7 @@ const Inventory = () => {
 
     setUploading(true);
     try {
-      const response = await api.post(`/api/inventory/${selectedBatchId}/bill`, formData, {
+      await api.post(`/api/inventory/${selectedBatchId}/bill`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
       alert('Bill uploaded successfully!');
