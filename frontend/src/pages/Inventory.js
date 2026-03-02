@@ -5,6 +5,9 @@ const Inventory = () => {
   const [batches, setBatches] = useState([]);
   const [form, setForm] = useState({ product_id: '', batch_number: '', quantity: '', expiry_date: '' });
   const [editing, setEditing] = useState(null);
+  const [selectedBatchId, setSelectedBatchId] = useState(null);
+  const [billFile, setBillFile] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     fetchBatches();
@@ -49,6 +52,33 @@ const Inventory = () => {
     }
   };
 
+  const handleBillUpload = async (e) => {
+    e.preventDefault();
+    if (!billFile || !selectedBatchId) {
+      alert('Please select a file and batch');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('bill', billFile);
+
+    setUploading(true);
+    try {
+      const response = await api.post(`/api/inventory/${selectedBatchId}/bill`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      alert('Bill uploaded successfully!');
+      setBillFile(null);
+      setSelectedBatchId(null);
+      fetchBatches();
+    } catch (err) {
+      console.error('Error uploading bill:', err);
+      alert('Failed to upload bill');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   return (
     <div>
       <h2 className="text-3xl font-bold mb-6">Inventory Batches</h2>
@@ -65,6 +95,25 @@ const Inventory = () => {
         </button>
         {editing && <button onClick={() => { setEditing(null); setForm({ product_id: '', batch_number: '', quantity: '', expiry_date: '' }); }} className="mt-4 ml-2 bg-gray-400 text-white px-4 py-2 rounded">Cancel</button>}
       </div>
+
+      <div className="bg-yellow-50 p-6 rounded shadow mb-6">
+        <h3 className="text-lg font-bold mb-4">📄 Upload Bill / Invoice</h3>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <select value={selectedBatchId} onChange={(e) => setSelectedBatchId(e.target.value)} className="p-2 border rounded">
+            <option value="">Select Batch</option>
+            {batches.map(b => (
+              <option key={b.id} value={b.id}>
+                {b.batch_number} - Product {b.productId}
+              </option>
+            ))}
+          </select>
+          <input type="file" accept=".pdf,.jpg,.jpeg,.png" onChange={(e) => setBillFile(e.target.files[0])} className="p-2 border rounded" />
+          <button onClick={handleBillUpload} disabled={uploading} className="bg-green-600 text-white px-4 py-2 rounded disabled:bg-green-400">
+            {uploading ? 'Uploading...' : 'Upload Bill'}
+          </button>
+        </div>
+      </div>
+
       <div className="bg-white p-6 rounded shadow">
         <table className="w-full">
           <thead className="bg-gray-800 text-white">
@@ -73,6 +122,7 @@ const Inventory = () => {
               <th className="p-2 text-left">Product</th>
               <th className="p-2 text-left">Quantity</th>
               <th className="p-2 text-left">Expiry Date</th>
+              <th className="p-2 text-left">Bill</th>
               <th className="p-2">Actions</th>
             </tr>
           </thead>
@@ -83,6 +133,15 @@ const Inventory = () => {
                 <td className="p-2">{b.productId}</td>
                 <td className="p-2">{b.quantity}</td>
                 <td className="p-2">{b.expiry_date || 'N/A'}</td>
+                <td className="p-2">
+                  {b.bill_image_path ? (
+                    <a href={b.bill_image_path} target="_blank" rel="noopener noreferrer" className="text-blue-600 underline">
+                      View Bill
+                    </a>
+                  ) : (
+                    <span className="text-gray-400">No bill</span>
+                  )}
+                </td>
                 <td className="p-2">
                   <button onClick={() => handleEdit(b)} className="text-blue-600 mr-2">Edit</button>
                   <button onClick={() => handleDelete(b.id)} className="text-red-600">Delete</button>

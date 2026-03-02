@@ -16,7 +16,14 @@ module.exports = (sequelize) => {
     },
     expiry_date: {
       type: DataTypes.DATEONLY
+    },
+    bill_image_path: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
+  }, {
+    tableName: 'inventory_batches',
+    timestamps: false
   });
 
   return InventoryBatch;
