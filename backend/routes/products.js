@@ -1,13 +1,28 @@
 const express = require('express');
 const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const productController = require('../controllers/productController');
 const authMiddleware = require('../middleware/auth');
 
 const router = express.Router();
 
-// Use /tmp for serverless, uploads for local
-const uploadDir = process.env.NODE_ENV === 'production' ? '/tmp/products/' : 'uploads/products/';
-const upload = multer({ dest: uploadDir });
+// Configure multer storage for serverless
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    const uploadDir = process.env.NODE_ENV === 'production' ? '/tmp/products' : 'uploads/products';
+    // Create directory if it doesn't exist
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  }
+});
+
+const upload = multer({ storage: storage });
 
 router.get('/', authMiddleware, productController.list);
 router.get('/scan', productController.scan); // Tally-style scanner (no auth required)
