@@ -93,6 +93,7 @@ CREATE TABLE IF NOT EXISTS inventory_batches (
     batch_number VARCHAR(255),
     quantity INTEGER NOT NULL,
     expiry_date DATE,
+    bill_image_path VARCHAR(255),
     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
