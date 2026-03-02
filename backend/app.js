@@ -10,6 +10,7 @@ const invoiceRoutes = require('./routes/invoices');
 const purchaseRoutes = require('./routes/purchases');
 const inventoryRoutes = require('./routes/inventory');
 const reportRoutes = require('./routes/reports');
+const migrationRoutes = require('./routes/migrations');
 
 const app = express();
 const PORT = process.env.PORT || 4000;
@@ -39,6 +40,7 @@ app.use('/api/invoices', invoiceRoutes);
 app.use('/api/purchases', purchaseRoutes);
 app.use('/api/inventory', inventoryRoutes);
 app.use('/api/reports', reportRoutes);
+app.use('/api/migrations', migrationRoutes);
 
 // health check (no database required)
 app.get('/', (req, res) => res.json({ status: 'ok', message: 'RR Enterprises API' }));
