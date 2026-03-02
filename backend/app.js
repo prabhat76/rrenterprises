@@ -19,8 +19,9 @@ console.log('NODE_ENV:', process.env.NODE_ENV);
 console.log('DATABASE_URL exists:', !!process.env.DATABASE_URL);
 
 // CORS configuration
+const frontendUrl = process.env.FRONTEND_URL ? process.env.FRONTEND_URL.trim() : null;
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || '*',
+  origin: frontendUrl || '*',
   credentials: true,
   optionsSuccessStatus: 200
 };
