@@ -7,6 +7,15 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
+    productId: {
+      type: DataTypes.INTEGER,
+      field: 'product_id',
+      allowNull: false,
+      references: {
+        model: 'products',
+        key: 'id'
+      }
+    },
     batch_number: {
       type: DataTypes.STRING
     },
