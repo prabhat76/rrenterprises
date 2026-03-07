@@ -47,7 +47,7 @@ exports.remove = async (req, res) => {
   const items = await InvoiceItem.findAll({ where: { invoiceId: inv.id } });
   for (const item of items) {
     if (item.item_type === 'product') {
-      const batches = await InventoryBatch.findAll({ where: { ProductId: item.item_id } });
+      const batches = await InventoryBatch.findAll({ where: { productId: item.item_id } });
       if (batches.length > 0) {
         batches[0].quantity += item.quantity;
         await batches[0].save();
@@ -71,7 +71,7 @@ exports.addLineItem = async (req, res) => {
     if (!product) return res.status(404).json({ error: 'Product not found' });
 
     // Check stock availability
-    const batches = await InventoryBatch.findAll({ where: { ProductId: product_id } });
+    const batches = await InventoryBatch.findAll({ where: { productId: product_id } });
     const totalStock = batches.reduce((sum, b) => sum + b.quantity, 0);
     
     if (totalStock < quantity) {
@@ -124,7 +124,7 @@ exports.updateLineItem = async (req, res) => {
 
     // Check stock if quantity increased
     if (qtyDiff > 0) {
-      const batches = await InventoryBatch.findAll({ where: { ProductId: item.item_id } });
+      const batches = await InventoryBatch.findAll({ where: { productId: item.item_id } });
       const totalStock = batches.reduce((sum, b) => sum + b.quantity, 0);
       
       if (totalStock < qtyDiff) {
@@ -142,7 +142,7 @@ exports.updateLineItem = async (req, res) => {
       }
     } else if (qtyDiff < 0) {
       // Return stock if quantity decreased
-      const batches = await InventoryBatch.findAll({ where: { ProductId: item.item_id } });
+      const batches = await InventoryBatch.findAll({ where: { productId: item.item_id } });
       if (batches.length > 0) {
         batches[0].quantity += Math.abs(qtyDiff);
         await batches[0].save();
@@ -171,7 +171,7 @@ exports.deleteLineItem = async (req, res) => {
     if (!item) return res.status(404).json({ error: 'Line item not found' });
 
     // Return stock
-    const batches = await InventoryBatch.findAll({ where: { ProductId: item.item_id } });
+    const batches = await InventoryBatch.findAll({ where: { productId: item.item_id } });
     if (batches.length > 0) {
       batches[0].quantity += item.quantity;
       await batches[0].save();
