@@ -10,13 +10,16 @@ npm --version     # Should be v6+
 psql --version    # Should be PostgreSQL 12+
 ```
 
-### Step 1: Setup Database (PostgreSQL)
+### Step 1: Setup Database (Local / Neon)
+
+By default, the backend uses a local SQLite database (`backend/db.sqlite`) so you don’t need to install PostgreSQL.
+
+#### Option A — Local (recommended for dev)
 ```bash
 cd /Users/prabhatkumar/Desktop/roushan
 
-# Create database and schema
-createdb roushan
-psql roushan < schema.sql
+# Remove old database (optional)
+rm -f backend/db.sqlite
 
 # Seed with 19 home appliances
 cd backend
@@ -28,6 +31,17 @@ node generate-qr-codes.js
 # Go back
 cd ..
 ```
+
+#### Option B — Neon / Postgres (optional)
+1. Copy `backend/.env.example` → `backend/.env`
+2. Update the `DB_*` values with your Neon connection info
+3. Run:
+```bash
+cd /Users/prabhatkumar/Desktop/roushan/backend
+node seed-products.js
+```
+
+> Note: If you use Neon, make sure `DB_HOST` is set in `backend/.env`. If `DB_HOST` is empty, the app will use local SQLite.
 
 ### Step 2: Setup Backend
 ```bash
