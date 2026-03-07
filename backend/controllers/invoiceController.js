@@ -198,7 +198,7 @@ exports.recordPayment = async (req, res) => {
     
     const { amount, transaction_date, payment_method, notes } = req.body;
     const trx = await Transaction.create({ 
-      invoiceId: inv.id, 
+      invoice_id: inv.id, 
       amount, 
       transaction_date, 
       payment_method, 
