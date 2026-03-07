@@ -55,7 +55,20 @@ const Inventory = () => {
   const handleBillUpload = async (e) => {
     e.preventDefault();
     if (!billFile || !selectedBatchId) {
-      alert('Please select a file and batch');
+      alert('Please select both a batch and a file');
+      return;
+    }
+
+    // Validate file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'];
+    if (!allowedTypes.includes(billFile.type)) {
+      alert('Please upload only JPG, PNG, or PDF files');
+      return;
+    }
+
+    // Validate file size (10MB max)
+    if (billFile.size > 10 * 1024 * 1024) {
+      alert('File size must be less than 10MB');
       return;
     }
 
@@ -64,16 +77,20 @@ const Inventory = () => {
 
     setUploading(true);
     try {
-      await api.post(`/api/inventory/${selectedBatchId}/bill`, formData, {
+      const response = await api.post(`/api/inventory/${selectedBatchId}/bill`, formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
-      alert('Bill uploaded successfully!');
+      alert(response.data.message || 'Bill uploaded successfully!');
       setBillFile(null);
       setSelectedBatchId(null);
+      // Reset file input
+      const fileInput = document.querySelector('input[type="file"]');
+      if (fileInput) fileInput.value = '';
       fetchBatches();
     } catch (err) {
       console.error('Error uploading bill:', err);
-      alert('Failed to upload bill');
+      const errorMsg = err.response?.data?.error || err.message || 'Failed to upload bill';
+      alert(`Upload failed: ${errorMsg}`);
     } finally {
       setUploading(false);
     }

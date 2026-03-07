@@ -34,17 +34,31 @@ exports.update = async (req, res) => {
 exports.uploadBill = async (req, res) => {
   try {
     const batchId = req.params.id;
+    
+    console.log('Upload bill request:', {
+      batchId,
+      hasFile: !!req.file,
+      body: req.body,
+      headers: req.headers
+    });
+    
     const batch = await InventoryBatch.findByPk(batchId);
-    if (!batch) return res.status(404).json({ error: 'Batch not found' });
+    if (!batch) {
+      return res.status(404).json({ error: 'Inventory batch not found' });
+    }
     
     if (!req.file) {
-      return res.status(400).json({ error: 'No file uploaded' });
+      return res.status(400).json({ error: 'No file uploaded. Please select a file.' });
     }
 
-    const billPath = `/uploads/bills/${req.file.filename}`;
+    // In production (Vercel), file is stored in /tmp which is ephemeral
+    // For permanent storage, we'd need to integrate cloud storage (S3, etc.)
+    const billPath = process.env.NODE_ENV === 'production' 
+      ? `/tmp/bills/${req.file.filename}`
+      : `/uploads/bills/${req.file.filename}`;
     
-    // Delete old bill if exists
-    if (batch.bill_image_path) {
+    // Delete old bill if exists and not in production
+    if (batch.bill_image_path && process.env.NODE_ENV !== 'production') {
       const oldPath = path.join(process.cwd(), batch.bill_image_path);
       if (fs.existsSync(oldPath)) {
         fs.unlinkSync(oldPath);
@@ -52,8 +66,17 @@ exports.uploadBill = async (req, res) => {
     }
 
     await batch.update({ bill_image_path: billPath });
-    res.json({ billPath, message: 'Bill uploaded successfully' });
+    
+    res.json({ 
+      billPath, 
+      message: 'Bill uploaded successfully',
+      filename: req.file.filename,
+      note: process.env.NODE_ENV === 'production' 
+        ? 'Note: File stored in temporary storage. Consider implementing cloud storage for permanent files.'
+        : null
+    });
   } catch (err) {
+    console.error('Upload bill error:', err);
     res.status(500).json({ error: err.message });
   }
 };
