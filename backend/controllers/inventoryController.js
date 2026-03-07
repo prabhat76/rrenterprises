@@ -14,7 +14,10 @@ exports.getByProduct = async (req, res) => {
 
 exports.create = async (req, res) => {
   try {
-    const batch = await InventoryBatch.create(req.body);
+    const data = req.body;
+    // Map snake_case to camelCase for Sequelize
+    if (data.product_id) data.productId = data.product_id;
+    const batch = await InventoryBatch.create(data);
     res.status(201).json(batch);
   } catch (err) {
     res.status(400).json({ error: err.message });
