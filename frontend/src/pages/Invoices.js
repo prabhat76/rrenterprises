@@ -152,6 +152,40 @@ const Invoices = () => {
     pdf.save(`invoice-${selectedInvoice.invoice_number}.pdf`);
   };
 
+  const handleSendWhatsApp = () => {
+    const customer = selectedInvoice.Customer;
+    if (!customer?.phone) {
+      alert('Customer phone number not available');
+      return;
+    }
+
+    // Format phone number (remove spaces, dashes, and add country code if needed)
+    let phone = customer.phone.replace(/[\s-]/g, '');
+    if (!phone.startsWith('+')) {
+      phone = '+91' + phone; // Add India country code
+    }
+
+    // Create invoice details message
+    const items = selectedInvoice.InvoiceItems?.map((item, idx) => 
+      `${idx + 1}. ${getProductName(item.item_id)} x ${item.quantity} = ₹${parseFloat(item.total_price).toFixed(2)}`
+    ).join('%0A');
+
+    const message = `*RR Enterprises - Invoice*%0A%0A` +
+      `Invoice No: *${selectedInvoice.invoice_number}*%0A` +
+      `Date: ${selectedInvoice.invoice_date}%0A` +
+      `Customer: ${customer.name}%0A%0A` +
+      `*Items:*%0A${items}%0A%0A` +
+      `Subtotal: ₹${selectedInvoice.subtotal?.toFixed(2) || '0.00'}%0A` +
+      `Paid: ₹${selectedInvoice.paidAmount?.toFixed(2) || '0.00'}%0A` +
+      `*Balance Due: ₹${selectedInvoice.balanceDue?.toFixed(2) || '0.00'}*%0A%0A` +
+      `Status: ${selectedInvoice.status.toUpperCase()}%0A%0A` +
+      `Thank you for your business!`;
+
+    // Open WhatsApp
+    const whatsappURL = `https://wa.me/${phone}?text=${message}`;
+    window.open(whatsappURL, '_blank');
+  };
+
   const getProductName = (id) => {
     const prod = products.find(p => p.id === id);
     return prod ? prod.name : `Product #${id}`;
@@ -598,6 +632,12 @@ const Invoices = () => {
               className="bg-red-600 text-white px-6 py-2 rounded hover:bg-red-700 font-semibold"
             >
               📄 Export to PDF
+            </button>
+            <button
+              onClick={handleSendWhatsApp}
+              className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 font-semibold"
+            >
+              📱 Send to WhatsApp
             </button>
             <button
               onClick={() => setCurrentView('list')}
