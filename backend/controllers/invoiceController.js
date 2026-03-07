@@ -13,6 +13,9 @@ exports.list = async (req, res) => {
 exports.create = async (req, res) => {
   try {
     const data = req.body;
+    // Map snake_case to camelCase for Sequelize
+    if (data.customer_id) data.CustomerId = data.customer_id;
+    if (data.createdBy === undefined && req.user) data.createdBy = req.user.id;
     data.invoice_number = await generateInvoiceNumber();
     data.total_amount = 0; // Will be calculated from line items
     const inv = await Invoice.create(data);
