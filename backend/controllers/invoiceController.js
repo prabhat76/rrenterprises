@@ -44,7 +44,7 @@ exports.remove = async (req, res) => {
   const inv = await Invoice.findByPk(req.params.id);
   if (!inv) return res.status(404).send();
   // Restore inventory when deleting invoice
-  const items = await InvoiceItem.findAll({ where: { invoiceId: inv.id } });
+  const items = await InvoiceItem.findAll({ where: { invoice_id: inv.id } });
   for (const item of items) {
     if (item.item_type === 'product') {
       const batches = await InventoryBatch.findAll({ where: { productId: item.item_id } });
@@ -81,7 +81,7 @@ exports.addLineItem = async (req, res) => {
     // Create line item
     const totalPrice = quantity * unit_price;
     const lineItem = await InvoiceItem.create({
-      invoiceId,
+      invoice_id: invoiceId,
       item_id: product_id,
       item_type: 'product',
       quantity,
@@ -100,7 +100,7 @@ exports.addLineItem = async (req, res) => {
     }
 
     // Update invoice total
-    const items = await InvoiceItem.findAll({ where: { invoiceId } });
+    const items = await InvoiceItem.findAll({ where: { invoice_id: invoiceId } });
     const newTotal = items.reduce((sum, item) => sum + parseFloat(item.total_price || 0), 0);
     await inv.update({ total_amount: newTotal });
 
@@ -153,9 +153,9 @@ exports.updateLineItem = async (req, res) => {
     await item.update({ quantity, unit_price, total_price: newTotal });
 
     // Recalculate invoice total
-    const items = await InvoiceItem.findAll({ where: { invoiceId: item.invoiceId } });
+    const items = await InvoiceItem.findAll({ where: { invoice_id: item.invoice_id } });
     const invoiceTotal = items.reduce((sum, i) => sum + parseFloat(i.total_price || 0), 0);
-    await Invoice.update({ total_amount: invoiceTotal }, { where: { id: item.invoiceId } });
+    await Invoice.update({ total_amount: invoiceTotal }, { where: { id: item.invoice_id } });
 
     res.json(item);
   } catch (err) {
@@ -177,11 +177,11 @@ exports.deleteLineItem = async (req, res) => {
       await batches[0].save();
     }
 
-    const invoiceId = item.invoiceId;
+    const invoiceId = item.invoice_id;
     await item.destroy();
 
     // Recalculate invoice total
-    const remaining = await InvoiceItem.findAll({ where: { invoiceId } });
+    const remaining = await InvoiceItem.findAll({ where: { invoice_id: invoiceId } });
     const newTotal = remaining.reduce((sum, i) => sum + parseFloat(i.total_price || 0), 0);
     await Invoice.update({ total_amount: newTotal }, { where: { id: invoiceId } });
 
@@ -206,7 +206,7 @@ exports.recordPayment = async (req, res) => {
     });
 
     // Calculate total paid
-    const transactions = await Transaction.findAll({ where: { invoiceId: inv.id } });
+    const transactions = await Transaction.findAll({ where: { invoice_id: inv.id } });
     const totalPaid = transactions.reduce((sum, t) => sum + parseFloat(t.amount || 0), 0);
 
     // Update invoice status

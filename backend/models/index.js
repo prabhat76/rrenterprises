@@ -38,21 +38,21 @@ Invoice.belongsTo(User, { foreignKey: 'createdBy' });
 Customer.hasMany(Invoice);
 Invoice.belongsTo(Customer);
 
-Invoice.hasMany(InvoiceItem, { onDelete: 'CASCADE' });
-InvoiceItem.belongsTo(Invoice);
+Invoice.hasMany(InvoiceItem, { onDelete: 'CASCADE', foreignKey: 'invoice_id' });
+InvoiceItem.belongsTo(Invoice, { foreignKey: 'invoice_id' });
 
 Product.hasMany(InvoiceItem, { foreignKey: 'item_id', constraints: false, scope: { item_type: 'product' } });
 Service.hasMany(InvoiceItem, { foreignKey: 'item_id', constraints: false, scope: { item_type: 'service' } });
 InvoiceItem.belongsTo(Product, { foreignKey: 'item_id', constraints: false });
 InvoiceItem.belongsTo(Service, { foreignKey: 'item_id', constraints: false });
 
-Invoice.hasMany(Transaction);
-Transaction.belongsTo(Invoice);
+Invoice.hasMany(Transaction, { foreignKey: 'invoice_id' });
+Transaction.belongsTo(Invoice, { foreignKey: 'invoice_id' });
 
-PurchaseInvoice.hasMany(PurchaseItem, { onDelete: 'CASCADE' });
-PurchaseItem.belongsTo(PurchaseInvoice);
-Product.hasMany(PurchaseItem);
-PurchaseItem.belongsTo(Product);
+PurchaseInvoice.hasMany(PurchaseItem, { onDelete: 'CASCADE', foreignKey: 'purchase_invoice_id' });
+PurchaseItem.belongsTo(PurchaseInvoice, { foreignKey: 'purchase_invoice_id' });
+Product.hasMany(PurchaseItem, { foreignKey: 'product_id' });
+PurchaseItem.belongsTo(Product, { foreignKey: 'product_id' });
 
 Product.hasMany(InventoryBatch, { foreignKey: 'productId' });
 InventoryBatch.belongsTo(Product, { foreignKey: 'productId' });

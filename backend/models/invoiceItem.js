@@ -7,6 +7,11 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
+    invoice_id: {
+      type: DataTypes.INTEGER,
+      field: 'invoice_id',
+      allowNull: false
+    },
     item_type: {
       type: DataTypes.STRING,
       allowNull: false

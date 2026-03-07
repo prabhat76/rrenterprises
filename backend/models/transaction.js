@@ -7,6 +7,11 @@ module.exports = (sequelize) => {
       primaryKey: true,
       autoIncrement: true
     },
+    invoice_id: {
+      type: DataTypes.INTEGER,
+      field: 'invoice_id',
+      allowNull: true
+    },
     transaction_date: {
       type: DataTypes.DATEONLY,
       allowNull: false
