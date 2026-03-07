@@ -217,9 +217,15 @@ const Invoices = () => {
                     </td>
                     <td className="p-3 space-x-2">
                       <button
-                        onClick={() => {
-                          setSelectedInvoice(i);
-                          setCurrentView('view');
+                        onClick={async () => {
+                          try {
+                            const response = await api.get(`/api/invoices/${i.id}/detail`);
+                            setSelectedInvoice(response.data);
+                            setCurrentView('view');
+                          } catch (err) {
+                            console.error('Error loading invoice details:', err);
+                            alert('Failed to load invoice details');
+                          }
                         }}
                         className="text-blue-600 hover:text-blue-800 font-semibold"
                       >
@@ -408,9 +414,15 @@ const Invoices = () => {
             {/* Action Buttons */}
             <div className="mt-6 space-x-2">
               <button
-                onClick={() => {
-                  setSelectedInvoice(null);
-                  setCurrentView('view');
+                onClick={async () => {
+                  try {
+                    const response = await api.get(`/api/invoices/${selectedInvoice.id}/detail`);
+                    setSelectedInvoice(response.data);
+                    setCurrentView('view');
+                  } catch (err) {
+                    console.error('Error loading invoice details:', err);
+                    alert('Failed to load invoice details');
+                  }
                 }}
                 className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 font-semibold"
               >
